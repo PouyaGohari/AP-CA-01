@@ -1,0 +1,5 @@
+3
+pa1 pa2 pa3
+pa1:0 YES|1 NO|2 IF_NECESSARY
+pa2:0 YES|2 NO|1 YES
+pa3:1 NO
