@@ -5,12 +5,15 @@
 #include <algorithm>
 using namespace std;
 
-const char pipe = '|';
-const char colon = ':';
-const char space = ' ';
+const char PIPE = '|';
+const char COLON = ':';
+const char SPACE = ' ';
 const string YES = "YES";
 const string NO = "NO";
-const string IF = "IF_NECESSARY";
+const string IF_NECESSARY = "IF_NECESSARY";
+const string TIME_SLOT = "Time slot";
+const string SYMBOL_BETWEEN_SLOT = "###";
+
 struct Input_shape{
     int time_slot_counts;
     vector<string> participants;
@@ -34,13 +37,14 @@ vector<string> reading_from_file(const string file_name){
     while(getline(input_file, line)){
         result.push_back(line);
     }
+    input_file.close();
     return result;
 }
 
 void replace_symbols_with_space(string &line){
     for(auto &character : line){
-        if(character == pipe || character == colon){
-            character = space;
+        if(character == PIPE || character == COLON){
+            character = SPACE;
         }
     }
 }
@@ -148,8 +152,62 @@ void prioritized_time_slots(vector<time_slot> &slots){
     }
 }
 
+bool comprator_vec(const string& a, const string& b,const vector<string> originial_vector){
+    auto it1 = find(originial_vector.begin(), originial_vector.end(), a);
+    auto it2 = find(originial_vector.begin(), originial_vector.end(), b);
+    return it1 < it2;
+}
+
+void sorting_vector_based_another(vector<string>& sortingvec, const vector<string> original){
+    sort(sortingvec.begin(), sortingvec.end()
+    , [&](const string& a, const string& b){return comprator_vec(a, b, original);});
+}
+
+void print_vector(vector<string> &vec, vector<string> participants){
+    sorting_vector_based_another(vec, participants);
+    for(auto str : vec){
+        cout << SPACE << str;
+    }
+    cout << SPACE;
+    cout << endl;
+}
+
+void print_slots(vector<time_slot> slots, const vector<string> participants){
+    for(auto slot : slots){
+        cout << TIME_SLOT << SPACE << slot.id << COLON << endl;
+        cout << YES << COLON;
+        print_vector(slot.yes_participants, participants);
+        cout << NO << COLON ;
+        print_vector(slot.no_participants, participants);
+        cout << IF_NECESSARY << COLON;
+        print_vector(slot.if_participants, participants);
+        cout << SYMBOL_BETWEEN_SLOT << endl;
+    }
+}
+
+void print_output(const vector<time_slot> slots, const vector<string> participants){
+    if(slots.size() <= 3){
+        print_slots(slots, participants);
+    }
+    else{
+        vector<time_slot> sub_slots(slots.begin(), slots.begin()+3);
+        print_slots(sub_slots, participants);
+    }
+}
+
+void writing_in_file(vector<time_slot> &slots, const vector<string> participants, const string file_name){
+    ofstream output_file(file_name);
+    streambuf* original_cout_buffer = cout.rdbuf();
+    cout.rdbuf(output_file.rdbuf());
+    prioritized_time_slots(slots);
+    print_output(slots, participants);
+    cout.rdbuf(original_cout_buffer);
+    output_file.close();
+}
+
 int main(int argc, char *argv[]){
     Input_shape inputs = filing_input_shape(reading_from_file(argv[1]));
     vector<time_slot> slots = filling_slots_with_inputs(inputs);
+    writing_in_file(slots, inputs.participants, argv[2]);
     return 0;
 }
