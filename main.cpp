@@ -78,7 +78,6 @@ vector<time_slot> initialize_time_slots(const int time_slot_counts){
     int i = 0;
     for(auto &slot : whole_time_slots){
         slot.id = i;
-        slot.if_numbers = time_slot_counts;
         slot.no_numbers = 0;
         slot.yes_numbers = 0;
         i += 1;
@@ -89,6 +88,7 @@ vector<time_slot> initialize_time_slots(const int time_slot_counts){
 void assign_if_participants(vector<time_slot> &slots, const vector<string> participants){
     for(auto &slot : slots){
         slot.if_participants = participants;
+        slot.if_numbers = participants.size();
     }
 }
 
@@ -125,6 +125,28 @@ vector<time_slot> filling_slots_with_inputs(const Input_shape inputs){
     counting_each_slot_answers(slots, inputs);
     return slots;
 } 
+
+bool compare_no_answers(time_slot slot1, time_slot slot2){
+    return slot1.no_numbers < slot2.no_numbers;
+}
+
+void sort_with_no_answers(vector<time_slot> &slots){
+    sort(slots.begin(), slots.end(), compare_no_answers);
+}
+
+void prioritized_time_slots(vector<time_slot> &slots){
+    sort_with_no_answers(slots);
+    for(int i = 0; i < slots.size() - 1; i++){
+        if(slots[i].no_numbers == slots[i + 1].no_numbers){
+            if(slots[i].if_numbers > slots[i + 1].if_numbers){
+                swap(slots[i], slots[i + 1]);
+            }
+            else if(slots[i].id > slots[i + 1].id){
+                swap(slots[i], slots[i + 1]);
+            }
+        }
+    }
+}
 
 int main(int argc, char *argv[]){
     Input_shape inputs = filing_input_shape(reading_from_file(argv[1]));
