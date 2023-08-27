@@ -1,0 +1,15 @@
+Time slot 0:
+YES: a 
+NO: 
+IF_NECESSARY: b c 
+###
+Time slot 2:
+YES: 
+NO: 
+IF_NECESSARY: a b c 
+###
+Time slot 1:
+YES: 
+NO: a 
+IF_NECESSARY: b c 
+###

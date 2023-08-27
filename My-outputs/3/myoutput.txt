@@ -1,0 +1,10 @@
+Time slot 0:
+YES: participant1 
+NO: participant2 
+IF_NECESSARY: 
+###
+Time slot 1:
+YES: participant2 
+NO: participant1 
+IF_NECESSARY: 
+###

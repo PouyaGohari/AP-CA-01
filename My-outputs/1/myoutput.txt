@@ -1,0 +1,15 @@
+Time slot 2:
+YES: fateme 
+NO: 
+IF_NECESSARY: ali akbar asghar 
+###
+Time slot 3:
+YES: 
+NO: 
+IF_NECESSARY: ali fateme akbar asghar 
+###
+Time slot 1:
+YES: ali 
+NO: akbar 
+IF_NECESSARY: fateme asghar 
+###
